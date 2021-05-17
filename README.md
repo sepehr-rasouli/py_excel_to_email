@@ -5,7 +5,8 @@ a python script that sends emails from a xlsx file
 `python v3, pandas, smtplib`
 
 ## **Dependencies**
-`pip install openpyxl`
+`pip install openpyxl`<br/>
+`pip install xlrd`
 
 ## **SETUP**
 * Google blocks sign-in attempts from apps which do not use modern security standards (mentioned on their support page). You should temporarily, turn on/off this safety feature by going to the link below:
