@@ -1,4 +1,4 @@
-# excel_to_mail_task
+# excel_to_mail_task.py
 a python script that sends emails from a xlsx file
 
 ## **Package Requirements**
