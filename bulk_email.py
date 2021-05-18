@@ -6,7 +6,7 @@
 -s SMTP_SERVER  [default: smtp.gmail.com]
 -p SMTP_PORT    [default: 465]
 
-Send emails to a bunch of people. CSV_FILE should contain 3 columns: "name", "email", "message". 
+Send emails to a bunch of people. CSV_FILE should contain three columns: "name", "email", "message". 
 """
 
 from docopt import docopt
@@ -34,8 +34,16 @@ server.login(sender_email, sender_password)
 topic = 'PCBS FEEDBACK'
 
 for name, email_address, message in zip(df.name, df.email, df.message):
-    server.sendmail(sender_email, [email_address], 
-                   f"""Subject: {topic}\n\n{message}""")
+    message = f"""
+Hi {name},
+
+Here is our comment(s) about your project:
+
+{message}
+
+Best regards
+"""
+    server.sendmail(sender_email, [email_address], f"Subject: {topic}\n\n{message}")
 
 # close the smtp server
 server.quit()
