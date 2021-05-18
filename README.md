@@ -1,14 +1,27 @@
-# excel_to_mail_task.py
-a python script that sends emails from a xlsx file
+# bulk_email.py
 
-## **Package Requirements**
-`python v3, pandas, smtplib`
+Sends emails from a csv file with three columns: "name", "email", "message". 
 
-## **Dependencies**
-`pip install openpyxl`<br/>
-`pip install xlrd`
+```
+Usage: bulk_email.py [-s SMTP_SERVER] [-p SMTP_PORT] CSV_FILE
 
-## **SETUP**
+-h              show this
+-s SMTP_SERVER  [default: smtp.gmail.com]
+-p SMTP_PORT    [default: 465]
+```
+
+
+## Requirements
+
+pandas
+smtplib
+docopt
+
+
+## Setup
+
+If you want to use `smtp.gmail.com` to send emails (the default behaviour):
+
 * Google blocks sign-in attempts from apps which do not use modern security standards (mentioned on their support page). You should temporarily, turn on/off this safety feature by going to the link below:
 Go to this link and select Turn On
 [https://www.google.com/settings/security/lesssecureapps](https://www.google.com/settings/security/lesssecureapps)
