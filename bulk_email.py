@@ -24,7 +24,7 @@ df = pandas.read_csv(spreadsheet)
 
 # Establishes the connection with the SMTP server
 sender_email = input(f"Connection to {smtp_server}:{smtp_port}...\nlogin: ")
-senter_password = getpass()
+sender_password = getpass()
 
 server = smtplib.SMTP_SSL(smtp_server, smtp_port)  # TODO: should catch exceptions
 server.ehlo()
