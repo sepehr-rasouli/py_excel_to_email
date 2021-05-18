@@ -35,8 +35,7 @@ topic = 'PCBS FEEDBACK'
 
 for name, email_address, message in zip(df.name, df.email, df.message):
     server.sendmail(sender_email, [email_address], 
-                   """To: {email_address}\r\n
-                      Subject: {topic}\n\n{message}""")
+                   f"""Subject: {topic}\n\n{message}""")
 
 # close the smtp server
 server.quit()
