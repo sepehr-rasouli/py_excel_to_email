@@ -1,3 +1,3 @@
-"name","email","message"
-"pallier1","christophe.pallier@gmail.com","excellent"
-"pallier2","christophe.pallier@inserm.fr","very good"
+"name","email","subject","message"
+"pallier1","christophe.pallier@gmail.com","test1","excellent"
+"pallier2","christophe.pallier@inserm.fr","test2","very good"

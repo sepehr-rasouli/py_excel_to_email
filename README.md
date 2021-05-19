@@ -1,36 +1,30 @@
-# bulk_email.py
+# bulk_email
 
-Sends emails from a csv file with three columns: "name", "email", "message". 
+Sends emails from a csv file with columns: "name", "email", "subject", "message". 
 
 ```
-Usage: bulk_email.py [-s SMTP_SERVER] [-p SMTP_PORT] CSV_FILE
+Usage: bulk_email [-h] [-v | -vv ] [-s SMTP_SERVER] [-p SMTP_PORT] SPREADSHEET
 
--h              show this
--s SMTP_SERVER  [default: smtp.gmail.com]
--p SMTP_PORT    [default: 465]
+-h                   show this
+-s SMTP_SERVER       [default: smtp.gmail.com]
+-p SMTP_PORT         [default: 465]
+-v                   verbosity level
+
+Send emails to a bunch of people.
+SPREADSHEET is the name or URL of a csv, xlsx or odf file containing four columns: "name", "email", "subject" and message".
 ```
 
+Examples:
 
-## Requirements
-
-pandas
-smtplib
-docopt
+    bulk_email -v emails.csv   # local file
+    bulk_email -vv https://docs.google.com/spreadsheets/d/1_J3z4RkSk5yWTUU9d91J9ZOA8eZsd_slVqyPGOK0Y1U/export?format=csv
 
 
-## Setup
+Note: To use the gmail smtp server, you have to check the (un)safe feature at <https://www.google.com/settings/security/lesssecureapps>
 
-If you want to use `smtp.gmail.com` to send emails (the default behaviour):
 
-* Google blocks sign-in attempts from apps which do not use modern security standards (mentioned on their support page). You should temporarily, turn on/off this safety feature by going to the link below:
-Go to this link and select Turn On
-[https://www.google.com/settings/security/lesssecureapps](https://www.google.com/settings/security/lesssecureapps)
-(Make sure you click turn on, and not turn off!)
+## Requirements:
 
-* if it still fails, you might need to clear Captcha: visit 
-[https://accounts.google.com/DisplayUnlockCaptcha](https://accounts.google.com/DisplayUnlockCaptcha) and sign in with the Gmail username and password.  If necessary (it's usually not), enter the letters in the distorted picture then press Continue. This will allow ten minutes for the python code to register as an approved connection.  Note that you must use the account you are using in your code - if the browser is already signed into another account, you must sign out first.
-
-* Preferably disable 2 factor authentication. If you insist on using a 2 factor authentication, you must create a password for this application to access your Google account without the 2 factor auth.
-Perform all the steps on the Google support page to generate an application password, and then update the `your_password` to use that, rather than your regular account password. <br/>
-On this page: [support.google.com/accounts/answer/185833]([support.google.com/accounts/answer/185833) follow the steps under the heading "How to generate an App password". After you generate it, you need to use that password in your configuration.
-
+    pandas
+    docopt
+    odfpy # for ods files
