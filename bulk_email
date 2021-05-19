@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # Original from  https://github.com/sepehr-rasouli/py_excel_to_email
-# Modified by Time-stamp: <2021-05-19 08:44:40 christophe@pallier.org> 
+# Modified by Time-stamp: <2021-05-19 09:25:33 christophe@pallier.org> 
 
 """Usage: bulk_email [-h] [-v | -vv ] [-s SMTP_SERVER] [-p SMTP_PORT] SPREADSHEET
 
@@ -24,8 +24,7 @@ Note: To use the gmail smtp server, you have to check the (un)safe feature at <h
 import sys
 from docopt import docopt
 from getpass import getpass
-import pandas
-from pandas import read_csv, read_excel
+from pandas import read_csv, read_excel, errors
 import smtplib
 
 
@@ -43,7 +42,8 @@ def generate_message(name, subject, message, signature=""):
 
 
 def open_smtp_connection(smtp_server, smtp_port, login, passwd):
-    server = smtplib.SMTP_SSL(smtp_server, smtp_port)  # TODO: should catch exceptions
+    # TODO: should catch exceptions!
+    server = smtplib.SMTP_SSL(smtp_server, smtp_port)
     server.ehlo()
     server.login(login, passwd)
     return server
@@ -77,17 +77,18 @@ if __name__ == "__main__":
     verbosity_level = args['-v']
 
     try:
-         table = read_excel(spreadsheet)
+        table = read_excel(spreadsheet)
     except ValueError:
-         try:
-              table = read_csv(spreadsheet)
-         except ParserError:
-              table = read_excel(spreadsheet, engine="odf")
-
+        try:
+            table = read_csv(spreadsheet)
+        except errors.ParserError:
+            table = read_excel(spreadsheet, engine="odf")
 
     # make sure the table has the expected columns
-    if not all([col in table for col in ['name', 'email', 'subject', 'message']]):
-        print("ERROR: the spreadsheet must include columns named 'name', 'email', 'subject' and 'message'. Aborting...")
+    if not all([col in table for col in ['name', 'email',
+                                         'subject', 'message']]):
+        print("ERROR: the spreadsheet must include columns named " +
+              "'name', 'email', 'subject' and 'message'. Aborting...")
         sys.exit(1)
 
     # Get the credentials to access the mail server
