@@ -1,23 +1,43 @@
-# excel_to_mail_task.py
-a python script that sends emails from a xlsx file
+# bulk_email
 
-## **Package Requirements**
-`python v3, pandas, smtplib`
+Sends emails from a spreadsheet file with columns: `name`, `email`, `subject`, `message`, e.g.
 
-## **Dependencies**
-`pip install openpyxl`<br/>
-`pip install xlrd`
+```
+"name","email","subject","message"
+"pallier1","christophe.pallier@gmail.com","test1","excellent"
+"pallier2","christophe.pallier@inserm.fr","test2","very good"
+```
 
-## **SETUP**
-* Google blocks sign-in attempts from apps which do not use modern security standards (mentioned on their support page). You should temporarily, turn on/off this safety feature by going to the link below:
-Go to this link and select Turn On
-[https://www.google.com/settings/security/lesssecureapps](https://www.google.com/settings/security/lesssecureapps)
-(Make sure you click turn on, and not turn off!)
+## Usage:
 
-* if it still fails, you might need to clear Captcha: visit 
-[https://accounts.google.com/DisplayUnlockCaptcha](https://accounts.google.com/DisplayUnlockCaptcha) and sign in with the Gmail username and password.  If necessary (it's usually not), enter the letters in the distorted picture then press Continue. This will allow ten minutes for the python code to register as an approved connection.  Note that you must use the account you are using in your code - if the browser is already signed into another account, you must sign out first.
+```
+bulk_email [-h] [-v | -vv ] [-s SMTP_SERVER] [-p SMTP_PORT] SPREADSHEET
 
-* Preferably disable 2 factor authentication. If you insist on using a 2 factor authentication, you must create a password for this application to access your Google account without the 2 factor auth.
-Perform all the steps on the Google support page to generate an application password, and then update the `your_password` to use that, rather than your regular account password. <br/>
-On this page: [support.google.com/accounts/answer/185833]([support.google.com/accounts/answer/185833) follow the steps under the heading "How to generate an App password". After you generate it, you need to use that password in your configuration.
+-h                   show this
+-s SMTP_SERVER       [default: smtp.gmail.com]
+-p SMTP_PORT         [default: 465]
+-v                   verbosity level
 
+Send emails to a bunch of people.
+SPREADSHEET is the name or URL of a csv, xlsx or odf file containing four columns: "name", "email", "subject" and message".
+```
+
+Examples:
+
+
+    python bulk_email -h
+    python bulk_email -vv emails.csv
+    python bulk_email -v emails.xlsx
+    python bulk_email  emails.ods
+    python bulk_email -vv "https://docs.google.com/spreadsheets/d/1_J3z4RkSk5yWTUU9d91J9ZOA8eZsd_slVqyPGOK0Y1U/export?format=csv"
+
+
+
+Note: To use the gmail smtp server, you have to check the (un)safe feature at <https://www.google.com/settings/security/lesssecureapps>
+
+
+## Requirements:
+
+    pandas
+    docopt
+    odfpy # only needed for ods files

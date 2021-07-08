@@ -1,0 +1,103 @@
+#! /usr/bin/env python
+# Original from  https://github.com/sepehr-rasouli/py_excel_to_email
+# Modified by Time-stamp: <2021-05-19 09:25:33 christophe@pallier.org> 
+
+"""Usage: bulk_email [-h] [-v | -vv ] [-s SMTP_SERVER] [-p SMTP_PORT] SPREADSHEET
+
+-h                   show this
+-s SMTP_SERVER       [default: smtp.gmail.com]
+-p SMTP_PORT         [default: 465]
+-v                   verbosity level
+
+Send emails to a bunch of people.
+SPREADSHEET is the name or URL of a csv, xlsx or odf file containing four columns: "name", "email", "subject" and message".
+
+Examples:
+bulk_email -vv emails.csv   # local file
+bulk_email -vv https://docs.google.com/spreadsheets/d/1_J3z4RkSk5yWTUU9d91J9ZOA8eZsd_slVqyPGOK0Y1U/export?format=csv
+
+
+Note: To use the gmail smtp server, you have to check the (un)safe feature at <https://www.google.com/settings/security/lesssecureapps>
+"""
+
+
+import sys
+from docopt import docopt
+from getpass import getpass
+from pandas import read_csv, read_excel, errors
+import smtplib
+
+
+def generate_message(name, subject, message, signature=""):
+     return f"""Subject: {subject}\n\n
+            Hello {name},
+
+            {message}
+
+            Best regards
+
+            --
+            {signature}
+            """
+
+
+def open_smtp_connection(smtp_server, smtp_port, login, passwd):
+    # TODO: should catch exceptions!
+    server = smtplib.SMTP_SSL(smtp_server, smtp_port)
+    server.ehlo()
+    server.login(login, passwd)
+    return server
+
+
+def close_smtp_connection(server):
+    server.quit()
+
+
+def send_emails(table, sender, smtp_server,  verbosity_level=0):
+    for name, email_address, subject, message in zip(table.name,
+                                                     table.email,
+                                                     table.subject,
+                                                     table.message):
+        msg = generate_message(name, subject, message)
+
+        if (verbosity_level > 0):
+            print(f"Sending email (or at least trying to) from {sender} to {email_address}")
+        if (verbosity_level > 1):
+            print(msg)
+
+        smtp_server.sendmail(sender, [email_address], msg)
+
+
+if __name__ == "__main__":
+
+    args = docopt(__doc__)
+    spreadsheet = args['SPREADSHEET']
+    smtp_server = args['-s']
+    smtp_port = args['-p']
+    verbosity_level = args['-v']
+
+    try:
+        table = read_excel(spreadsheet)
+    except ValueError:
+        try:
+            table = read_csv(spreadsheet)
+        except errors.ParserError:
+            table = read_excel(spreadsheet, engine="odf")
+
+    # make sure the table has the expected columns
+    if not all([col in table for col in ['name', 'email',
+                                         'subject', 'message']]):
+        print("ERROR: the spreadsheet must include columns named " +
+              "'name', 'email', 'subject' and 'message'. Aborting...")
+        sys.exit(1)
+
+    # Get the credentials to access the mail server
+    sender = input(f"Connection to {smtp_server}:{smtp_port}...\nlogin: ")
+    password = getpass()
+
+    # Let's roll
+    server = open_smtp_connection(smtp_server, smtp_port, sender, password)
+
+    send_emails(table, sender, server, verbosity_level)
+
+    close_smtp_connection(server)
